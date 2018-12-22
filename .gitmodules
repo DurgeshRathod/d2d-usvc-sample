@@ -1,0 +1,12 @@
+[submodule "friends"]
+	path = friends
+	url = https://github.com/rajch/d2d-usvc-sample-friends/
+[submodule "profile"]
+	path = profile
+	url = https://github.com/rajch/d2d-usvc-sample-profile/
+[submodule "posts"]
+	path = posts
+	url = https://github.com/rajch/d2d-usv-sample-posts/
+[submodule "users"]
+	path = users
+	url = https://github.com/rajch/d2d-usvc-sample-users/
