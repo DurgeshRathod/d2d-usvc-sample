@@ -1,0 +1,75 @@
+version: '3.4'
+
+services:
+
+  usersservice:
+    image: rajchaudhuri/d2d-usvc-users:1.0
+    environment:
+      DB_PATH: /app/db
+    volumes:
+      - uservol:/app/db
+    networks: 
+      - servicenet
+    
+  profileservice:
+    image: rajchaudhuri/d2d-usvc-profile:1.0
+    volumes:
+      - profilevol:/app/data
+    networks: 
+      - servicenet
+
+  friendsservice:
+    image: rajchaudhuri/d2d-usvc-friends:1.0
+    environment:
+      DB_URL: mongodb://friendsdbservice/friendsdb
+      CAP: 10
+      PROFILE_URL: profileservice
+      PROFILE_URL_PORT: 80
+    depends_on:
+      - friendsdbservice
+      - profileservice
+    networks:
+      - friendsnet
+      - servicenet
+                
+  friendsdbservice:
+    image: mongo
+    networks:
+      - friendsnet
+
+  postsdbservice:
+    image: mongo
+    networks: 
+      - postsnet
+
+  postsservice:
+    image: rajchaudhuri/d2d-usvc-posts:1.0
+    environment:
+      DB_HOST: postsdbservice
+      FRIENDS_URL: http://friendsservice
+    depends_on:
+      - postsdbservice
+      - friendsservice
+    networks: 
+      - servicenet
+      - postsnet
+
+  uiservice:
+    image: rajchaudhuri/d2d-usvc-ui:1.0
+    depends_on:
+      - usersservice
+      - postsservice
+    ports:
+      - 8080:80
+    networks:
+      - servicenet
+
+volumes:
+  uservol:
+
+  profilevol:
+
+networks: 
+  - servicenet
+  - postsnet
+  - friendsnet
